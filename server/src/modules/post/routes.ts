@@ -6,9 +6,8 @@ import {
   postUpdateHandler,
 } from "./controller.js";
 
-export const postRouter = Router();
-
-postRouter.get("/", postIndexHandler);
-postRouter.post("/", postCreateHandler);
-postRouter.patch("/", postUpdateHandler);
-postRouter.delete("/", postDeleteHandler);
+export const postRouter = Router()
+  .get("/", postIndexHandler)
+  .post("/", postCreateHandler)
+  .patch("/", postUpdateHandler)
+  .delete("/", postDeleteHandler);

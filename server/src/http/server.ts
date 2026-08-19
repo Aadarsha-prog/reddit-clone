@@ -16,6 +16,11 @@ export class CustomServer {
     return this;
   }
 
+  regsiterRequiredMiddlewares() {
+    this.app.use(express.json());
+    return this;
+  }
+
   registerHealthCheckRoute() {
     this.app.get("/", (req, res) => {
       res.redirect("/health");

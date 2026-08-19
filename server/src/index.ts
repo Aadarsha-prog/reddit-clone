@@ -5,5 +5,6 @@ const server = new CustomServer();
 
 server
   .startServer()
+  .regsiterRequiredMiddlewares()
   .registerHealthCheckRoute()
   .registerModuleRouter("v1", "post", postRouter);

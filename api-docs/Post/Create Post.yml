@@ -6,6 +6,11 @@ info:
 http:
   method: POST
   url: "{{BASE_URL}}/api/v1/post"
+  body:
+    type: json
+    data: |-
+      {
+      }
   auth: inherit
 
 settings:

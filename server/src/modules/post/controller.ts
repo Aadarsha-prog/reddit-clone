@@ -1,17 +1,27 @@
 import type { Request, Response } from "express";
+import { posts } from "./service.js";
 
 export function postIndexHandler(req: Request, res: Response) {
-  res.send("Hello from the Post index route!");
+  return res.json(posts);
 }
 
 export function postCreateHandler(req: Request, res: Response) {
-  res.send("Hello from the Post create route!");
+  const body = req.body;
+
+  const post = body;
+
+  posts.push(post);
+  return res.json(post);
 }
 
 export function postUpdateHandler(req: Request, res: Response) {
-  res.send("Hello from the Post update route!");
+  return res.json({
+    message: "Hello from the Post update route!",
+  });
 }
 
 export function postDeleteHandler(req: Request, res: Response) {
-  res.send("Hello from the Post delete route!");
+  return res.json({
+    message: "Hello from the Post delete route!",
+  });
 }
