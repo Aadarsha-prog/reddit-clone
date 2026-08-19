@@ -1,4 +1,5 @@
 import express, { type Router, type Express } from "express";
+import { postRouter } from "../modules/post/routes.js";
 
 export class CustomServer {
   public app: Express;
@@ -15,18 +16,19 @@ export class CustomServer {
     return this;
   }
 
-  //   createGlobalPrefix(prefix: string) {
-  //     this.app.use(`/${prefix}`, (req, res, next) => {
-  //       console.log(
-  //         `Global prefix ${prefix} applied to request: ${req.method} ${req.url}`,
-  //       );
-  //       next();
-  //     });
-  //     return this;
-  //   }
+  registerHealthCheckRoute() {
+    this.app.get("/", (req, res) => {
+      res.redirect("/health");
+    });
 
-  registerRouter(prefix: string, router: Router) {
-    this.app.use(`/${prefix}`, router);
+    this.app.get("/health", (req, res) => {
+      res.send("OK");
+    });
+    return this;
+  }
+
+  registerModuleRouter(version: string, prefix: string, router: Router) {
+    this.app.use(`/api/${version}/${prefix}`, router);
     return this;
   }
 }
