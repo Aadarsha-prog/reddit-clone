@@ -1,23 +1,15 @@
 info:
-  name: Update Post
+  name: Retrieve Post
   type: http
-  seq: 4
+  seq: 2
 
 http:
-  method: PATCH
+  method: GET
   url: "{{BASE_URL}}/api/v1/post/:id"
   params:
     - name: id
       value: "{{PostId}}"
       type: path
-  body:
-    type: json
-    data: |-
-      {
-        "title": "Some other title" ,
-        "content": "Some Post Content",
-        "images": ["https://google.com"]
-      }
   auth: inherit
 
 settings:

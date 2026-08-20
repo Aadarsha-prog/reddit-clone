@@ -1,5 +1,9 @@
 import type { PostCreateInput } from "./schemas/create.schema.js";
 
-export const posts: (PostCreateInput & {
+export let posts: (PostCreateInput & {
   id: string;
 })[] = [];
+
+export function replacePosts(newPosts: (PostCreateInput & { id: string })[]) {
+  posts = newPosts;
+}

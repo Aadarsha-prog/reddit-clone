@@ -1,12 +1,25 @@
 import type { Request, Response } from "express";
-import { posts } from "./service.js";
+import { posts, replacePosts } from "./service.js";
 import {
   postCreateSchema,
   type PostCreateInput,
 } from "./schemas/create.schema.js";
+import type { PostUpdateInput } from "./schemas/update.schema.js";
+import { CustomError } from "../../http/error/customError.js";
 
 export function postIndexHandler(req: Request, res: Response) {
   return res.json(posts);
+}
+
+export function postRetrieveHandler(req: Request, res: Response) {
+  const id = req.params.id;
+
+  // Find the post
+  const post = posts.find((post) => post.id === id);
+
+  if (!post) throw new CustomError("Post not found", 404);
+
+  return res.json(post);
 }
 
 export function postCreateHandler(req: Request, res: Response) {
@@ -19,13 +32,47 @@ export function postCreateHandler(req: Request, res: Response) {
 }
 
 export function postUpdateHandler(req: Request, res: Response) {
+  const id = req.params.id;
+  const validatedBody = req.validatedBody as PostUpdateInput;
+
+  // sometcode
+  // Find post that belongs to the id
+  const postIndex = posts.findIndex((post) => post.id === id);
+
+  // TODOL Instead of throwing Error,
+  // See how. can we throw 404 err
+  if (postIndex === -1) throw new CustomError("Post not found", 404);
+
+  const post = posts[postIndex]!;
+
+  const updatedPost = { ...post, ...validatedBody } as PostCreateInput & {
+    id: string;
+  };
+
+  posts[postIndex] = updatedPost;
+
   return res.json({
-    message: "Hello from the Post update route!",
+    id,
+    post: updatedPost,
+    message: "Post updated successfully",
   });
 }
 
 export function postDeleteHandler(req: Request, res: Response) {
+  const id = req.params.id;
+
+  // Find the post
+  const postIndex = posts.findIndex((post) => post.id === id);
+
+  if (postIndex === -1) throw new CustomError("Post not found", 404);
+
+  // Filter posts whose id is not the given id
+  const newPosts = posts.filter((post) => post.id !== id);
+
+  replacePosts(newPosts);
+
   return res.json({
-    message: "Hello from the Post delete route!",
+    newPosts,
+    message: "Post deleted successfully",
   });
 }

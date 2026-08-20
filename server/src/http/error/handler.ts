@@ -1,11 +1,15 @@
 import { z, ZodError } from "zod";
+import { CustomError } from "./customError.js";
 
 export class ErrorHandler {
   constructor(private readonly error: any) {}
 
+  // Based on instance of err, return the response payload
   handle() {
     if (this.error instanceof ZodError) {
       return this.handleZodError(this.error);
+    } else if (this.error instanceof CustomError) {
+      return this.handleCustomError(this.error);
     } else if (this.error instanceof Error) {
       return this.handleJSError(this.error);
     }
@@ -15,7 +19,15 @@ export class ErrorHandler {
       data: null,
       status: 500,
     };
-    // Based on instance of err, return the response payload
+  }
+
+  handleCustomError(err: CustomError) {
+    console.log({ s: err.statusCode });
+    return {
+      status: err.statusCode,
+      message: err.message,
+      data: err.data ?? null,
+    };
   }
 
   handleJSError(err: Error) {
