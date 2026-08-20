@@ -7,4 +7,5 @@ server
   .startServer()
   .regsiterRequiredMiddlewares()
   .registerHealthCheckRoute()
-  .registerModuleRouter("v1", "post", postRouter);
+  .registerModuleRouter("v1", "post", postRouter)
+  .registerRequestErrorHandler();

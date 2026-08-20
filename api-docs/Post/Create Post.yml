@@ -10,6 +10,13 @@ http:
     type: json
     data: |-
       {
+        "title": "Some title",
+        "content": "Some Content",
+        "images": [],
+        "createdBy": {
+          "id": "ABC",
+          "name": "Suparth"
+        }
       }
   auth: inherit
 

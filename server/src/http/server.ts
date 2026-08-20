@@ -1,5 +1,12 @@
-import express, { type Router, type Express } from "express";
+import express, {
+  type Router,
+  type Express,
+  type Request,
+  type Response,
+  type NextFunction,
+} from "express";
 import { postRouter } from "../modules/post/routes.js";
+import { ErrorHandler } from "./error/handler.js";
 
 export class CustomServer {
   public app: Express;
@@ -34,6 +41,17 @@ export class CustomServer {
 
   registerModuleRouter(version: string, prefix: string, router: Router) {
     this.app.use(`/api/${version}/${prefix}`, router);
+    return this;
+  }
+
+  registerRequestErrorHandler() {
+    this.app.use(
+      (err: any, req: Request, res: Response, next: NextFunction) => {
+        const handledError = new ErrorHandler(err);
+        const responsePayload = handledError.handle();
+        return res.status(responsePayload.status).json(responsePayload);
+      },
+    );
     return this;
   }
 }

@@ -1,3 +1,3 @@
-import type { Post } from "./post.types.js";
+import type { PostCreateInput } from "./schemas/create.schema.js";
 
-export const posts: Post[] = [];
+export const posts: PostCreateInput[] = [];

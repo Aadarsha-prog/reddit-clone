@@ -1,17 +1,21 @@
 import type { Request, Response } from "express";
 import { posts } from "./service.js";
+import {
+  postCreateSchema,
+  type PostCreateInput,
+} from "./schemas/create.schema.js";
 
 export function postIndexHandler(req: Request, res: Response) {
   return res.json(posts);
 }
 
 export function postCreateHandler(req: Request, res: Response) {
-  const body = req.body;
+  const validatedBody = req.validatedBody as PostCreateInput;
 
-  const post = body;
+  posts.push(validatedBody);
+  console.log("POST CREATE HANDLER", validatedBody);
 
-  posts.push(post);
-  return res.json(post);
+  return res.json(validatedBody);
 }
 
 export function postUpdateHandler(req: Request, res: Response) {
