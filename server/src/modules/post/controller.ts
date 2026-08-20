@@ -11,11 +11,11 @@ export function postIndexHandler(req: Request, res: Response) {
 
 export function postCreateHandler(req: Request, res: Response) {
   const validatedBody = req.validatedBody as PostCreateInput;
-
-  posts.push(validatedBody);
-  console.log("POST CREATE HANDLER", validatedBody);
-
-  return res.json(validatedBody);
+  // Generate a random id
+  const randomId = (Math.floor(Math.random() * 1000) + 1).toString();
+  const post = { id: randomId, ...validatedBody };
+  posts.push(post);
+  return res.json(post);
 }
 
 export function postUpdateHandler(req: Request, res: Response) {
