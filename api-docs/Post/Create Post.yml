@@ -6,6 +6,9 @@ info:
 http:
   method: POST
   url: "{{BASE_URL}}/api/v1/post"
+  headers:
+    - name: Authorization
+      value: MY_PASSWORD
   body:
     type: json
     data: |-

@@ -1,11 +1,12 @@
 import { z, ZodError } from "zod";
 import { CustomError } from "./customError.js";
+import type { ResponseFormat } from "../response/index.js";
 
 export class ErrorHandler {
   constructor(private readonly error: any) {}
 
   // Based on instance of err, return the response payload
-  handle() {
+  handle(): ResponseFormat {
     if (this.error instanceof ZodError) {
       return this.handleZodError(this.error);
     } else if (this.error instanceof CustomError) {
@@ -17,14 +18,13 @@ export class ErrorHandler {
     return {
       message: "Internal server error",
       data: null,
-      status: 500,
+      statusCode: 500,
     };
   }
 
   handleCustomError(err: CustomError) {
-    console.log({ s: err.statusCode });
     return {
-      status: err.statusCode,
+      statusCode: err.statusCode,
       message: err.message,
       data: err.data ?? null,
     };
@@ -32,7 +32,7 @@ export class ErrorHandler {
 
   handleJSError(err: Error) {
     return {
-      status: 500,
+      statusCode: 500,
       message: err.message || "Internal server error",
       data: null,
     };
@@ -40,7 +40,7 @@ export class ErrorHandler {
 
   handleZodError(err: ZodError) {
     return {
-      status: 422,
+      statusCode: 422,
       message: "Validation failed",
       data: z.treeifyError(err),
     };

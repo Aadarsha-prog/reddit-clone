@@ -7,6 +7,7 @@ import express, {
 } from "express";
 import { postRouter } from "../modules/post/routes.js";
 import { ErrorHandler } from "./error/handler.js";
+import { sendResponse } from "./response/index.js";
 
 export class CustomServer {
   public app: Express;
@@ -49,7 +50,10 @@ export class CustomServer {
       (err: any, req: Request, res: Response, next: NextFunction) => {
         const handledError = new ErrorHandler(err);
         const responsePayload = handledError.handle();
-        return res.status(responsePayload.status).json(responsePayload);
+        return sendResponse({
+          res,
+          ...responsePayload,
+        });
       },
     );
     return this;

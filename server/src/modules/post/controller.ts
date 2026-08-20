@@ -6,9 +6,15 @@ import {
 } from "./schemas/create.schema.js";
 import type { PostUpdateInput } from "./schemas/update.schema.js";
 import { CustomError } from "../../http/error/customError.js";
+import { sendResponse } from "../../http/response/index.js";
 
 export function postIndexHandler(req: Request, res: Response) {
-  return res.json(posts);
+  return sendResponse({
+    res,
+    data: posts,
+    message: "Posts retrieved successfully",
+    statusCode: 200,
+  });
 }
 
 export function postRetrieveHandler(req: Request, res: Response) {
@@ -19,7 +25,12 @@ export function postRetrieveHandler(req: Request, res: Response) {
 
   if (!post) throw new CustomError("Post not found", 404);
 
-  return res.json(post);
+  return sendResponse({
+    res,
+    data: post,
+    message: "Post retrieved successfully",
+    statusCode: 200,
+  });
 }
 
 export function postCreateHandler(req: Request, res: Response) {
@@ -28,7 +39,13 @@ export function postCreateHandler(req: Request, res: Response) {
   const randomId = (Math.floor(Math.random() * 1000) + 1).toString();
   const post = { id: randomId, ...validatedBody };
   posts.push(post);
-  return res.json(post);
+
+  return sendResponse({
+    res,
+    data: post,
+    message: "Post created successfully",
+    statusCode: 201,
+  });
 }
 
 export function postUpdateHandler(req: Request, res: Response) {
@@ -51,10 +68,11 @@ export function postUpdateHandler(req: Request, res: Response) {
 
   posts[postIndex] = updatedPost;
 
-  return res.json({
-    id,
-    post: updatedPost,
+  return sendResponse({
+    res,
+    data: updatedPost,
     message: "Post updated successfully",
+    statusCode: 201,
   });
 }
 
@@ -71,8 +89,10 @@ export function postDeleteHandler(req: Request, res: Response) {
 
   replacePosts(newPosts);
 
-  return res.json({
-    newPosts,
+  return sendResponse({
+    res,
+    data: newPosts,
     message: "Post deleted successfully",
+    statusCode: 201,
   });
 }
