@@ -1,0 +1,6 @@
+.sidebar {
+  padding: 10px;
+  grid-column: 1/2;
+  grid-row: 1 / -1;
+  border-right: 1px solid #eaeaea;
+}
