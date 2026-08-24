@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Button from "./components/core/button";
-import MainLayout from "./components/layout/main-layout";
+import Button from "../components/core/button";
+import MainLayout from "../components/layout/main-layout";
 
 type Move = "rock" | "paper" | "scissor";
 
@@ -12,7 +12,7 @@ type Move = "rock" | "paper" | "scissor";
 
 const moves: Move[] = ["rock", "paper", "scissor"];
 
-function App() {
+function RockPaperScissor() {
   const [humanMove, setHumanMove] = useState<Move | undefined>(undefined);
 
   const [aiMove, setAiMove] = useState<Move | undefined>(undefined);
@@ -54,7 +54,7 @@ function App() {
   };
 
   return (
-    <MainLayout>
+    <div>
       {/* Rock paper scissor */}
       <p>Your Move:</p>
       <Choices handleClick={handleClick} />
@@ -62,7 +62,7 @@ function App() {
       <div>Your Move: {humanMove ?? "You need to click a button"}</div>
       <div>AI Move: {aiMove ?? "AI Will Play after you play"}</div>
       <GameStateText winner={winner} />
-    </MainLayout>
+    </div>
   );
 }
 
@@ -107,4 +107,4 @@ function GameStateText(props: { winner: "human" | "ai" | "draw" | undefined }) {
   else if (props.winner === "ai") return <div>AI Wins</div>;
   else return <div>No Winner Yet</div>;
 }
-export default App;
+export default RockPaperScissor;

@@ -1,0 +1,11 @@
+.tic-tac-toe-board {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.tic-tac-toe-cell {
+  text-align: center;
+}
