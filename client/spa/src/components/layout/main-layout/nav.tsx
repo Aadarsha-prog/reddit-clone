@@ -1,12 +1,19 @@
-import "../../../styles/nav.css";
+import "../../../styles/layout/nav.css";
+import Button from "../../core/button";
 
 export default function Nav() {
   return (
     <nav className="nav">
       <ul>
-        <li>Home</li>
-        <li>About</li>
-        <li>Contact</li>
+        <li>
+          <Button>Home</Button>
+        </li>
+        <li>
+          <Button>About</Button>
+        </li>
+        <li>
+          <Button>Contact</Button>
+        </li>
       </ul>
     </nav>
   );

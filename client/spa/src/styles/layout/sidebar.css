@@ -1,0 +1,27 @@
+.sidebar {
+  padding: 10px;
+  grid-column: 1/2;
+  grid-row: 1 / -1;
+  border-right: 1px solid #eaeaea;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.project-info {
+  display: flex;
+
+  align-items: center;
+  gap: 10px;
+}
+
+.project-info > img {
+  width: 40px;
+  aspect-ratio: 1/1;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.project-info > p {
+  font-weight: bold;
+}
