@@ -8,11 +8,13 @@ import MainLayout from "./components/layout/main-layout/index.tsx";
 import APICall from "./pages/api-call.tsx";
 import AutomaticCounter from "./pages/auto-counter.tsx";
 import Mutations from "./pages/mutations.tsx";
+import Refs from "./pages/ref.tsx";
+import DialogPage from "./pages/dialog-page.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MainLayout>
-      <Mutations />
+      <DialogPage />
     </MainLayout>
   </StrictMode>,
 );
