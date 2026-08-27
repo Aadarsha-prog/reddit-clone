@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Button from "../components/core/button";
 
 function mockingAPICall(userName: string, delay: number) {
@@ -15,9 +15,20 @@ function Mutations() {
   const [fetchedData, setFetchedData] = useState<{ userName: string } | null>(
     null,
   );
+
+  const selectedUser = useRef<string>(null);
+
   async function handleFetchData(userName: string, delay: number) {
     try {
+      selectedUser.current = userName;
       const data = await mockingAPICall(userName, delay);
+
+      // We need to check if the data.username is selectedUser.current
+      if (data.userName !== selectedUser.current) {
+        console.log(`This is stale data`);
+        return;
+      }
+
       setFetchedData(data);
     } catch (error) {
       console.log(error);
