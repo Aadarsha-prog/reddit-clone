@@ -1,7 +1,7 @@
 .main-layout {
   display: grid;
   height: 100dvh;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 100px 1fr;
   grid-template-rows: 40px 1fr 150px;
 }
 

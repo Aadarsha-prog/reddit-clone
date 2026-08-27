@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Button from "../components/core/button";
-import MainLayout from "../components/layout/main-layout";
 
 type Move = "rock" | "paper" | "scissor";
 
