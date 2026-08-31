@@ -9,6 +9,7 @@ import { steps } from "../_utils";
 function FormPageContent() {
   const [step, setStep] = React.useState(0);
   const C = steps[step].component;
+
   return (
     <Card className="max-w-173.75 w-full mx-auto rounded-[12px] p-16 pb-6 h-full">
       <CardHeader className="p-0 flex flex-col gap-20 w-full">
