@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { COUNTRIES } from "../_utils/countries";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 const makeCountrySchema = (args: {
   invalidErrMsg: string;
@@ -20,13 +21,18 @@ export const formSchema = z
     email: z.email("Email is invalid"),
     phone: z
       .string("Phone should be a valid string")
-      .min(1, "Phone is required"),
+      .min(1, "Phone is required")
+      .refine((value) => {
+        // Add logic to check if phone no is valid
+        const isValidPhone = isValidPhoneNumber(value);
+        return isValidPhone;
+      }, "Phone number is invalid"),
     dob: z.date("Date of Birth should be a valid date").refine((date) => {
       const today = new Date();
       const age = today.getFullYear() - date.getFullYear();
       return age >= 18;
     }, "You must be at least 18 years old"),
-    gender: z.enum(["male", "female", "other"], "Gender is required"),
+    gender: z.enum(["male", "female", "other"], "Please select a valid gender"),
 
     // Trip Info
     departureCountry: makeCountrySchema({
@@ -88,3 +94,30 @@ export const formSchema = z
       path: ["returnDate"],
     },
   );
+
+export type FormSchema = z.infer<typeof formSchema>;
+export const defaultFormValues: FormSchema = {
+  name: "",
+  email: "",
+  phone: "",
+  dob: new Date(),
+  gender: "male",
+  departureCountry: "",
+  destinationCountry: "",
+  departureDate: new Date(),
+  returnDate: new Date(),
+  numberOfTravelers: 1,
+  type: "single-trip",
+  medicalCoverageAmount: 0,
+  currency: "USD",
+  tripCancellationCoverage: false,
+  baggageCoverage: false,
+  emergencyEvacuationCoverage: false,
+  passportNumber: "",
+  address: "",
+  city: "",
+  zip: "",
+  travellingWithPets: false,
+  preexistingMedicalConditions: "",
+  sepcialRequirements: "",
+};

@@ -3,6 +3,7 @@ import PageSidebar from "./_components/page-header";
 import FormPageContent from "./_components/page-content";
 import ThemeProvider, { useThemeContext } from "./_providers/theme.provider";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import StepsProvider from "./_providers/step-provider";
 
 function FormInner() {
   const { isDarkMode } = useThemeContext();
@@ -24,7 +25,9 @@ function FormInner() {
 function Form() {
   return (
     <ThemeProvider>
-      <FormInner />
+      <StepsProvider>
+        <FormInner />
+      </StepsProvider>
     </ThemeProvider>
   );
 }
