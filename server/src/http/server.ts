@@ -1,13 +1,6 @@
-import express, {
-  type Router,
-  type Express,
-  type Request,
-  type Response,
-  type NextFunction,
-} from "express";
-import { postRouter } from "../modules/post/routes.js";
-import { ErrorHandler } from "./error/handler.js";
-import { sendResponse } from "./response/index.js";
+import express, { type Router, type Express, type Request, type Response } from 'express';
+import { ErrorHandler } from './error/handler.js';
+import { sendResponse } from './response/index.js';
 
 export class CustomServer {
   public app: Express;
@@ -30,12 +23,12 @@ export class CustomServer {
   }
 
   registerHealthCheckRoute() {
-    this.app.get("/", (req, res) => {
-      res.redirect("/health");
+    this.app.get('/', (req, res) => {
+      res.redirect('/health');
     });
 
-    this.app.get("/health", (req, res) => {
-      res.send("OK");
+    this.app.get('/health', (req, res) => {
+      res.send('OK');
     });
     return this;
   }
@@ -46,16 +39,14 @@ export class CustomServer {
   }
 
   registerRequestErrorHandler() {
-    this.app.use(
-      (err: any, req: Request, res: Response, next: NextFunction) => {
-        const handledError = new ErrorHandler(err);
-        const responsePayload = handledError.handle();
-        return sendResponse({
-          res,
-          ...responsePayload,
-        });
-      },
-    );
+    this.app.use((err: any, req: Request, res: Response) => {
+      const handledError = new ErrorHandler(err);
+      const responsePayload = handledError.handle();
+      return sendResponse({
+        res,
+        ...responsePayload,
+      });
+    });
     return this;
   }
 }

@@ -1,18 +1,15 @@
-import type { Request, Response } from "express";
-import { posts, replacePosts } from "./service.js";
-import {
-  postCreateSchema,
-  type PostCreateInput,
-} from "./schemas/create.schema.js";
-import type { PostUpdateInput } from "./schemas/update.schema.js";
-import { CustomError } from "../../http/error/customError.js";
-import { sendResponse } from "../../http/response/index.js";
+import type { Request, Response } from 'express';
+import { posts, replacePosts } from './service.js';
+import { type PostCreateInput } from './schemas/create.schema.js';
+import type { PostUpdateInput } from './schemas/update.schema.js';
+import { CustomError } from '../../http/error/customError.js';
+import { sendResponse } from '../../http/response/index.js';
 
 export function postIndexHandler(req: Request, res: Response) {
   return sendResponse({
     res,
     data: posts,
-    message: "Posts retrieved successfully",
+    message: 'Posts retrieved successfully',
     statusCode: 200,
   });
 }
@@ -23,12 +20,12 @@ export function postRetrieveHandler(req: Request, res: Response) {
   // Find the post
   const post = posts.find((post) => post.id === id);
 
-  if (!post) throw new CustomError("Post not found", 404);
+  if (!post) throw new CustomError('Post not found', 404);
 
   return sendResponse({
     res,
     data: post,
-    message: "Post retrieved successfully",
+    message: 'Post retrieved successfully',
     statusCode: 200,
   });
 }
@@ -43,7 +40,7 @@ export function postCreateHandler(req: Request, res: Response) {
   return sendResponse({
     res,
     data: post,
-    message: "Post created successfully",
+    message: 'Post created successfully',
     statusCode: 201,
   });
 }
@@ -58,7 +55,7 @@ export function postUpdateHandler(req: Request, res: Response) {
 
   // TODOL Instead of throwing Error,
   // See how. can we throw 404 err
-  if (postIndex === -1) throw new CustomError("Post not found", 404);
+  if (postIndex === -1) throw new CustomError('Post not found', 404);
 
   const post = posts[postIndex]!;
 
@@ -71,7 +68,7 @@ export function postUpdateHandler(req: Request, res: Response) {
   return sendResponse({
     res,
     data: updatedPost,
-    message: "Post updated successfully",
+    message: 'Post updated successfully',
     statusCode: 201,
   });
 }
@@ -82,7 +79,7 @@ export function postDeleteHandler(req: Request, res: Response) {
   // Find the post
   const postIndex = posts.findIndex((post) => post.id === id);
 
-  if (postIndex === -1) throw new CustomError("Post not found", 404);
+  if (postIndex === -1) throw new CustomError('Post not found', 404);
 
   // Filter posts whose id is not the given id
   const newPosts = posts.filter((post) => post.id !== id);
@@ -92,7 +89,7 @@ export function postDeleteHandler(req: Request, res: Response) {
   return sendResponse({
     res,
     data: newPosts,
-    message: "Post deleted successfully",
+    message: 'Post deleted successfully',
     statusCode: 201,
   });
 }

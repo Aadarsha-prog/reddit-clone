@@ -1,4 +1,4 @@
-import type { PostCreateInput } from "./schemas/create.schema.js";
+import type { PostCreateInput } from './schemas/create.schema.js';
 
 export let posts: (PostCreateInput & {
   id: string;

@@ -1,14 +1,12 @@
-import type { Response } from "express";
+import type { Response } from 'express';
 
-export type ResponseFormat<T extends Record<any, any> = {}> = {
+export type ResponseFormat<T = unknown> = {
   message: string;
   statusCode: number;
   data: T | null;
 };
 
-export function formatResponse<T extends Record<string, any>>(
-  args: ResponseFormat<T>,
-): ResponseFormat<T> {
+export function formatResponse<T>(args: ResponseFormat<T>): ResponseFormat<T> {
   return {
     message: args.message,
     statusCode: args.statusCode,
@@ -16,7 +14,7 @@ export function formatResponse<T extends Record<string, any>>(
   };
 }
 
-export function sendResponse<T extends Record<string, any>>(
+export function sendResponse<T>(
   args: {
     res: Response;
   } & ResponseFormat<T>,
