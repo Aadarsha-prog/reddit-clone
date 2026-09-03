@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "type-check": "tsc -b --noEmit",
     "lint": "oxlint",
+    "format:check": "oxlint --format json",
+    "pr:check": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build",
     "preview": "vite preview"
   },
   "dependencies": {

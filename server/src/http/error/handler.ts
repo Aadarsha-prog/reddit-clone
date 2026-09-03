@@ -1,6 +1,6 @@
-import { z, ZodError } from "zod";
-import { CustomError } from "./customError.js";
-import type { ResponseFormat } from "../response/index.js";
+import { z, ZodError } from 'zod';
+import { CustomError } from './customError.js';
+import type { ResponseFormat } from '../response/index.js';
 
 export class ErrorHandler {
   constructor(private readonly error: any) {}
@@ -16,7 +16,7 @@ export class ErrorHandler {
     }
 
     return {
-      message: "Internal server error",
+      message: 'Internal server error',
       data: null,
       statusCode: 500,
     };
@@ -33,7 +33,7 @@ export class ErrorHandler {
   handleJSError(err: Error) {
     return {
       statusCode: 500,
-      message: err.message || "Internal server error",
+      message: err.message || 'Internal server error',
       data: null,
     };
   }
@@ -41,7 +41,7 @@ export class ErrorHandler {
   handleZodError(err: ZodError) {
     return {
       statusCode: 422,
-      message: "Validation failed",
+      message: 'Validation failed',
       data: z.treeifyError(err),
     };
   }

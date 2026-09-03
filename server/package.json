@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "format:check": "prettier --check src/",
+    "lint": "eslint src/",
+    "pr:check": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build"
   },
   "keywords": [],
   "author": "Suparth Narayan Ghimire",
@@ -20,9 +24,13 @@
   },
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
     "@types/express": "^5.0.6",
+    "eslint": "^10.9.1",
+    "prettier": "^3.9.6",
     "tsx": "^4.23.12",
-    "typescript": "^7.0.2"
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.45.0"
   },
   "dependencies": {
     "express": "^5.2.1",
