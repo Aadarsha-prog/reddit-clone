@@ -45,7 +45,7 @@ jobs:
           version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
           cache-dependency-path: "client/spa/pnpm-lock.yaml"
       - name: Install dependencies
@@ -67,7 +67,7 @@ jobs:
           version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
           cache-dependency-path: "client/tw-shadcn/pnpm-lock.yaml"
       - name: Install dependencies
@@ -89,7 +89,7 @@ jobs:
           version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
           cache-dependency-path: "server/pnpm-lock.yaml"
       - name: Install dependencies
