@@ -3,4 +3,4 @@ variables:
   - name: BASE_URL
     value: http://localhost:5005
   - name: PostId
-    value: "2"
+    value: "7"

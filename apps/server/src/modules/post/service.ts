@@ -1,10 +1,22 @@
-import type { PostCreateInput, PostUpdateInput } from '@reddit-clone/shared';
+import type { PostCreateInput, PostUpdateInput, QueryParamSchema } from '@reddit-clone/shared';
 import { dbInstance } from '../../db/connection.js';
-import { postsTable } from '../../db/schemas/post.schema.js';
+import { postsTable } from '../../db/schemas/modules/post.table.js';
 import { eq } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
 
-export function getAllPosts() {
-  return dbInstance.query.postsTable.findMany();
+export function getAllPosts(queryParams?: QueryParamSchema) {
+  const { title } = queryParams ?? {};
+  return dbInstance.query.postsTable.findMany({
+    where: {
+      ...(title
+        ? {
+            title: {
+              like: `%${title}%`,
+            },
+          }
+        : undefined),
+    },
+  });
 }
 
 export function getPostById(postId: number) {
@@ -16,7 +28,8 @@ export function getPostById(postId: number) {
 }
 
 export function createPost(post: PostCreateInput) {
-  return dbInstance.insert(postsTable).values(post);
+  const slug = post.title.toLowerCase().replaceAll(' ', '-') + '-' + nanoid(6);
+  return dbInstance.insert(postsTable).values({ ...post, slug });
 }
 
 export function updatePost(postId: number, post: PostUpdateInput) {

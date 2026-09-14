@@ -3,10 +3,12 @@ import { sendResponse } from '../../http/response/index.js';
 import { createPost, getAllPosts, getPostById, updatePost, deletePost } from './service.js';
 import z from 'zod';
 import { CustomError } from '../../http/error/customError.js';
-import type { PostCreateInput, PostUpdateInput } from '@reddit-clone/shared';
+import { queryParamSchema, type PostCreateInput, type PostUpdateInput } from '@reddit-clone/shared';
 
 export async function postIndexHandler(req: Request, res: Response) {
-  const posts = await getAllPosts();
+  const queryParams = queryParamSchema.parse(req.query);
+
+  const posts = await getAllPosts(queryParams);
 
   return sendResponse({
     res,

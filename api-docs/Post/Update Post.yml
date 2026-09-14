@@ -14,8 +14,8 @@ http:
     type: json
     data: |-
       {
-        "title": "Some other title" ,
-        "content": "Some Post Content"
+        "title": "AI Software engineering -- UPDATED",
+        "content": "Software engineering with AI"
       }
   auth: inherit
 

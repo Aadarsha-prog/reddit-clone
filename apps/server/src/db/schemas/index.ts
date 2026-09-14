@@ -1,1 +1,1 @@
-export * from './post.schema.js';
+export * from './modules/post.table.js';

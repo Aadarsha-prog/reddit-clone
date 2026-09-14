@@ -5,7 +5,11 @@ info:
 
 http:
   method: GET
-  url: "{{BASE_URL}}/api/v1/post"
+  url: "{{BASE_URL}}/api/v1/post?title=ds"
+  params:
+    - name: title
+      value: ds
+      type: query
   auth: inherit
 
 settings:
@@ -13,3 +17,4 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+  forwardAuthorizationHeader: true
