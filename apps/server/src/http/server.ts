@@ -7,7 +7,7 @@ import express, {
 } from 'express';
 import { ErrorHandler } from './error/handler.js';
 import { sendResponse } from './response/index.js';
-
+import cors from 'cors';
 export class CustomServer {
   public app: Express;
 
@@ -24,6 +24,11 @@ export class CustomServer {
   }
 
   regsiterRequiredMiddlewares() {
+    this.app.use(
+      cors({
+        origin: '*',
+      }),
+    );
     this.app.use(express.json());
     return this;
   }
