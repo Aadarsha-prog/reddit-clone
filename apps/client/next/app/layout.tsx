@@ -4,6 +4,7 @@ import { Geist } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import RootProvider from '@/providers/root-provider';
 import { Toaster } from '@/components/ui/toast';
+import AppHeader from '@/components/shared/header';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -15,10 +16,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en" className={cn('h-full antialiased', 'font-sans', geist.variable)}>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-dvh">
         <RootProvider>
-          {children}
-          <Toaster />
+          <main className="min-h-dvh grid bg-background text-foreground grid-rows-[auto_1fr]">
+            <AppHeader />
+            {children}
+            <Toaster />
+          </main>
         </RootProvider>
       </body>
     </html>

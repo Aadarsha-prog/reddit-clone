@@ -1,6 +1,6 @@
 import RootLayout from '@/components/layout/root-layout';
 
-function HomePage() {
+async function HomePage() {
   return (
     <RootLayout>
       <div>HomePage</div>
