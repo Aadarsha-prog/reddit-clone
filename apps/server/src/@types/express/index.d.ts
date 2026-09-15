@@ -1,7 +1,15 @@
-import type { Request as ExpressRequest } from 'express';
+import type { UserTable } from '../../db/schemas/index.js';
 
-declare module 'express' {
-  interface Request extends ExpressRequest {
-    validatedBody?: Record<string, unknown>;
+declare global {
+  namespace Express {
+    interface Request {
+      validatedBody?: Record<string, unknown>;
+    }
+
+    interface Locals {
+      user: UserTable;
+    }
   }
 }
+
+export {};

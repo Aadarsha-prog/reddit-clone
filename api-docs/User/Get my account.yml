@@ -1,0 +1,18 @@
+info:
+  name: Get my account
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{BASE_URL}}/api/v1/user/me"
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc4OTQ0Mjk0NSwiZXhwIjoxNzkwMDQ3NzQ1fQ.nb_-VSHIc9k2Nk70q7701x88zKddvbk3P4Cw1LW6bII
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

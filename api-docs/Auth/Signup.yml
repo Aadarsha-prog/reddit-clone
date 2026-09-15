@@ -1,0 +1,25 @@
+info:
+  name: Signup
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/v1/auth/signup"
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Suparth",
+        "email": "suparth3@realpha.com",
+        "password": "abc123!",
+        "confirmPassword": "abc123!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

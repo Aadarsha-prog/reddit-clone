@@ -1,6 +1,8 @@
 import { CustomServer } from './http/server.js';
 import { env } from './lib/env.schema.js';
+import { authRouter } from './modules/auth/routes.js';
 import { postRouter } from './modules/post/routes.js';
+import { userRouter } from './modules/user/routes.js';
 const server = new CustomServer();
 
 console.log(env.DATABASE_URL);
@@ -10,4 +12,6 @@ server
   .regsiterRequiredMiddlewares()
   .registerHealthCheckRoute()
   .registerModuleRouter('v1', 'post', postRouter)
+  .registerModuleRouter('v1', 'auth', authRouter)
+  .registerModuleRouter('v1', 'user', userRouter)
   .registerRequestErrorHandler();

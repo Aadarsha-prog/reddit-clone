@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: "{{BASE_URL}}/api/v1/post?title=ds"
+  url: "{{BASE_URL}}/api/v1/post?title=abc"
   params:
     - name: title
-      value: ds
+      value: abc
       type: query
   auth: inherit
 

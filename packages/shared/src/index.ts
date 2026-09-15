@@ -2,3 +2,4 @@ export * from './schemas/user.schema.js';
 export * from './schemas/post.schema.js';
 export * from './http/types.js';
 export * from './schemas/queryParams.schema.js';
+export * from './schemas/auth.schema.js';
