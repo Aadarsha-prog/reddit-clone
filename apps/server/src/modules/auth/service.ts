@@ -5,9 +5,14 @@ import { eq } from 'drizzle-orm';
 import { CustomError } from '../../http/error/customError.js';
 import bcrypt from 'bcrypt';
 import { createJWTToken } from '../token/service.js';
-import { env } from '../../lib/env.schema.js';
+import { E_NODE_ENV_ENUM, env } from '../../lib/env.schema.js';
+import type { Response } from 'express';
+import {
+  AUTH_ACCESS_TOKEN_COOKIE_NAME,
+  AUTH_ACCESS_TOKEN_EXPIRES_DAYS,
+} from '../../lib/constants/auth.constants.js';
 
-export async function login(body: LoginInput) {
+export async function login(res: Response, body: LoginInput) {
   const { email, password } = body;
 
   const users = await dbInstance
@@ -28,11 +33,16 @@ export async function login(body: LoginInput) {
     payload: { userId: user.id },
     secret: env.ACCESS_TOKEN_SECRET,
     opts: {
-      expiresIn: '7d', //
+      expiresIn: `${AUTH_ACCESS_TOKEN_EXPIRES_DAYS}d`, //
     },
   });
 
-  return { accessToken };
+  res.cookie(AUTH_ACCESS_TOKEN_COOKIE_NAME, accessToken, {
+    maxAge: AUTH_ACCESS_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000, // Expiration time in milliseconds (e.g., 900,000 ms = 15 minutes)
+    httpOnly: true, // Prevents client-side scripts from reading the cookie (protects against XSS)
+    secure: env.NODE_ENV !== E_NODE_ENV_ENUM.local, // Ensures the cookie is only sent over encrypted HTTPS connections
+    sameSite: env.NODE_ENV !== E_NODE_ENV_ENUM.local ? 'lax' : 'strict', // Controls cross-site behavior to mitigate CSRF attacks
+  });
 }
 
 export async function signup(body: SignupInput) {

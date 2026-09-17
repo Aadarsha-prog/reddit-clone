@@ -8,7 +8,7 @@ http:
   url: "{{BASE_URL}}/api/v1/user/me"
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc4OTQ0Mjk0NSwiZXhwIjoxNzkwMDQ3NzQ1fQ.nb_-VSHIc9k2Nk70q7701x88zKddvbk3P4Cw1LW6bII
+    token: ""
 
 settings:
   encodeUrl: true

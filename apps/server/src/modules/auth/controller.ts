@@ -5,10 +5,10 @@ import { login, signup } from './service.js';
 
 export async function authLoginHandler(req: Request, res: Response) {
   const body = req.validatedBody as LoginInput;
-  const user = await login(body);
+  await login(res, body);
 
   return sendResponse({
-    data: user,
+    data: null,
     message: 'Login successful',
     res,
     statusCode: 200,

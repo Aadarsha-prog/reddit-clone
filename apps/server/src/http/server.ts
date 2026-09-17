@@ -8,6 +8,7 @@ import express, {
 import { ErrorHandler } from './error/handler.js';
 import { sendResponse } from './response/index.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 export class CustomServer {
   public app: Express;
 
@@ -29,7 +30,10 @@ export class CustomServer {
         origin: '*',
       }),
     );
+    this.app.use(cookieParser());
+
     this.app.use(express.json());
+
     return this;
   }
 
