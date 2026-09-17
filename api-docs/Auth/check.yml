@@ -4,7 +4,7 @@ info:
   seq: 4
 
 http:
-  method: POST
+  method: GET
   url: "{{BASE_URL}}/api/v1/auth/check"
   body:
     type: json

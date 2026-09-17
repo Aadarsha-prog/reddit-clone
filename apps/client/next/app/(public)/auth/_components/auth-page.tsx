@@ -28,6 +28,7 @@ import {
   UsersRound,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
   Controller,
@@ -132,11 +133,7 @@ function AuthPage({ mode }: { mode: AuthMode }) {
             </p>
           </div>
 
-          {isLogin ? (
-            <LoginForm submitLabel={pageContent.submitLabel} />
-          ) : (
-            <RegisterForm submitLabel={pageContent.submitLabel} />
-          )}
+          {isLogin ? <LoginForm /> : <RegisterForm submitLabel={pageContent.submitLabel} />}
 
           <p className="mt-7 text-center text-sm text-muted-foreground">
             {pageContent.switchPrompt}{' '}
@@ -153,7 +150,7 @@ function AuthPage({ mode }: { mode: AuthMode }) {
   );
 }
 
-function LoginForm({ submitLabel }: { submitLabel: string }) {
+function LoginForm() {
   const [passwordShown, setPasswordShown] = useState(false);
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -162,6 +159,7 @@ function LoginForm({ submitLabel }: { submitLabel: string }) {
       password: '',
     },
   });
+  const router = useRouter();
 
   const { mutateAsync: triggerLogin, isPending } = useMutation({
     mutationFn: login,
@@ -171,7 +169,10 @@ function LoginForm({ submitLabel }: { submitLabel: string }) {
   const onSubmit = (data: LoginInput) => {
     toast.promise(triggerLogin(data), {
       loading: 'Logging in...',
-      success: 'Logged in successfully!',
+      success: () => {
+        router.push(APP_ROUTES.DASHBOARD);
+        return 'Login successful';
+      },
       error: 'Failed to log in.',
     });
   };

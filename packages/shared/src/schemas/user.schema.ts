@@ -5,4 +5,4 @@ export const userSchema = z.object({
   name: z.string().min(1, 'User name is required'),
 });
 
-export type User = z.infer<typeof userSchema>;
+export type UserCreateInput = z.infer<typeof userSchema>;

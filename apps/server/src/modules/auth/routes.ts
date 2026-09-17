@@ -10,7 +10,7 @@ import { loginSchema, signupSchema } from '@reddit-clone/shared';
 import { isValidUser } from '../user/middleware.js';
 
 export const authRouter = Router()
-  .post('/check', isValidUser, authCheckHandler)
+  .get('/check', isValidUser, authCheckHandler)
   .post('/login', validate(loginSchema), authLoginHandler)
   .post('/signup', validate(signupSchema), authSignupHandler)
   .post('/logout', authLogoutHandler);
