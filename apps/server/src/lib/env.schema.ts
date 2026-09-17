@@ -16,6 +16,10 @@ const envSchema = z.object({
       };
     },
   }),
+  WHITE_LISTED_FE_ORIGINS: z
+    .string()
+    .min(1, 'Please add valid white listed FE origins')
+    .transform((v) => v.split(',')),
   DATABASE_URL: z
     .string('DATABASE_URL is required and must be a valid string')
     .min(1, 'DATABASE_URL is required and must be a valid string'),

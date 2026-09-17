@@ -5,7 +5,7 @@ export const loginSchema = z.object({
   password: z.string('Please enter valid password').min(1, 'Please enter a valid password'),
 });
 
-export const signupSchema = z
+export const registerSchema = z
   .object({
     name: z.string('Please enter valid name').min(2, 'Name must be at least 2 characters long'),
     email: z.email('Please enter a valid email address'),
@@ -26,5 +26,8 @@ export const signupSchema = z
     },
   );
 
+export const signupSchema = registerSchema;
+
 export type LoginInput = z.infer<typeof loginSchema>;
-export type SignupInput = z.infer<typeof signupSchema>;
+export type RegisterInput = z.infer<typeof registerSchema>;
+export type SignupInput = RegisterInput;

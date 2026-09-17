@@ -3,6 +3,15 @@ import { sendResponse } from '../../http/response/index.js';
 import type { LoginInput, SignupInput } from '@reddit-clone/shared';
 import { login, signup } from './service.js';
 
+export async function authCheckHandler(req: Request, res: Response) {
+  return sendResponse({
+    data: null,
+    message: 'ok',
+    res,
+    statusCode: 200,
+  });
+}
+
 export async function authLoginHandler(req: Request, res: Response) {
   const body = req.validatedBody as LoginInput;
   await login(res, body);

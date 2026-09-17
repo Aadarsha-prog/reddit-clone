@@ -1,9 +1,9 @@
 export const APP_ROUTES = {
   HOME: '/',
   POST: {
-    CREATE: '/post/create',
-    VIEW: (id: string) => `/post/${id}` as const,
-    EDIT: (id: string) => `/post/${id}/edit` as const,
+    CREATE: '/urd/post/create',
+    VIEW: (id: string) => `/urd/post/${id}` as const,
+    EDIT: (id: string) => `/urd/post/${id}/edit` as const,
   },
   AUTH: {
     LOGIN: '/auth/login',

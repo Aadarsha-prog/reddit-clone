@@ -1,5 +1,5 @@
 import { getAllPosts } from '@/lib/api/post.api';
-import PostList from './post/_components/list';
+import PostList from './(private)/urd/post/_components/list';
 
 export default async function Home() {
   const post = await getAllPosts();

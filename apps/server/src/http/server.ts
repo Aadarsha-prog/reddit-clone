@@ -9,6 +9,7 @@ import { ErrorHandler } from './error/handler.js';
 import { sendResponse } from './response/index.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { env } from '../lib/env.schema.js';
 export class CustomServer {
   public app: Express;
 
@@ -27,7 +28,8 @@ export class CustomServer {
   regsiterRequiredMiddlewares() {
     this.app.use(
       cors({
-        origin: '*',
+        origin: env.WHITE_LISTED_FE_ORIGINS,
+        credentials: true,
       }),
     );
     this.app.use(cookieParser());
