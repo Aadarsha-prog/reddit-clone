@@ -1,41 +1,27 @@
 'use client';
 
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import PasswordInput from '@/components/ui/password';
 import { toast } from '@/components/ui/toast';
-import { login } from '@/lib/api/auth.api';
+import { login, signup } from '@/lib/api/auth.api';
 import { APP_ROUTES } from '@/lib/app-routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  ApiResponse,
   loginSchema,
   registerSchema,
   type LoginInput,
   type RegisterInput,
 } from '@reddit-clone/shared';
 import { useMutation } from '@tanstack/react-query';
-import {
-  ArrowRight,
-  Check,
-  Eye,
-  EyeClosed,
-  LockKeyhole,
-  Mail,
-  MessageSquareQuote,
-  ShieldCheck,
-  UserRound,
-  UsersRound,
-} from 'lucide-react';
+import { AxiosError } from 'axios';
+import { ArrowRight, MessageSquareQuote, ShieldCheck, UsersRound } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import {
-  Controller,
-  useForm,
-  type FieldError as HookFormFieldError,
-  type UseFormRegisterReturn,
-} from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 type AuthMode = 'login' | 'signup';
 
@@ -133,7 +119,7 @@ function AuthPage({ mode }: { mode: AuthMode }) {
             </p>
           </div>
 
-          {isLogin ? <LoginForm /> : <RegisterForm submitLabel={pageContent.submitLabel} />}
+          {isLogin ? <LoginForm /> : <RegisterForm />}
 
           <p className="mt-7 text-center text-sm text-muted-foreground">
             {pageContent.switchPrompt}{' '}
@@ -151,7 +137,6 @@ function AuthPage({ mode }: { mode: AuthMode }) {
 }
 
 function LoginForm() {
-  const [passwordShown, setPasswordShown] = useState(false);
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -159,9 +144,12 @@ function LoginForm() {
       password: '',
     },
   });
-  const router = useRouter();
 
-  const { mutateAsync: triggerLogin, isPending } = useMutation({
+  const {
+    mutateAsync: triggerLogin,
+    isPending,
+    error,
+  } = useMutation<ApiResponse, AxiosError<ApiResponse>>({
     mutationFn: login,
     mutationKey: ['login'],
   });
@@ -170,7 +158,7 @@ function LoginForm() {
     toast.promise(triggerLogin(data), {
       loading: 'Logging in...',
       success: () => {
-        router.push(APP_ROUTES.DASHBOARD);
+        window.location.href = APP_ROUTES.DASHBOARD;
         return 'Login successful';
       },
       error: 'Failed to log in.',
@@ -180,6 +168,12 @@ function LoginForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <Card className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-7">
+        {error?.response?.data?.message && (
+          <Alert variant="destructive-filled">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{error?.response?.data?.message}</AlertDescription>
+          </Alert>
+        )}
         <CardContent className="p-0 flex flex-col gap-5">
           <Controller
             control={form.control}
@@ -210,29 +204,15 @@ function LoginForm() {
                 <FieldLabel className="text-sm font-medium" htmlFor="login-password">
                   Password
                 </FieldLabel>
-                <div className="relative">
-                  <Input
-                    className="h-11 bg-background px-3 text-sm md:text-sm"
-                    id="login-password"
-                    type={passwordShown ? 'text' : 'password'}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your password"
-                    autoComplete="off"
-                    autoFocus
-                    {...field}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setPasswordShown((pv) => !pv)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:opacity-60"
-                  >
-                    {passwordShown ? (
-                      <EyeClosed className="size-4 stroke-1" />
-                    ) : (
-                      <Eye className="size-4 stroke-1" />
-                    )}
-                  </button>
-                </div>
+                <PasswordInput
+                  className="h-11 bg-background px-3 text-sm md:text-sm"
+                  id="login-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                  autoComplete="off"
+                  autoFocus
+                  {...field}
+                />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -246,7 +226,7 @@ function LoginForm() {
   );
 }
 
-function RegisterForm({ submitLabel }: { submitLabel: string }) {
+function RegisterForm() {
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -257,142 +237,153 @@ function RegisterForm({ submitLabel }: { submitLabel: string }) {
     },
   });
 
-  function onSubmit() {}
+  const {
+    mutateAsync: triggerSignup,
+    isPending: isSigningUp,
+    error: signupError,
+  } = useMutation<ApiResponse, AxiosError<ApiResponse>>({
+    mutationFn: signup,
+    mutationKey: ['signup'],
+  });
+
+  const {
+    mutateAsync: triggerLogin,
+    isPending: isLoggingIn,
+    error: loginError,
+  } = useMutation<ApiResponse, AxiosError<ApiResponse>, LoginInput>({
+    mutationFn: login,
+    mutationKey: ['login'],
+  });
+
+  async function signupAndLogin(data: RegisterInput) {
+    await triggerSignup(data);
+    await triggerLogin({ email: data.email, password: data.password });
+  }
+
+  const onSubmit = (data: RegisterInput) => {
+    toast.promise(signupAndLogin(data), {
+      loading: 'Signing up...',
+      success: () => {
+        window.location.href = APP_ROUTES.DASHBOARD;
+        return 'Signup successful';
+      },
+      error: (err: AxiosError<ApiResponse>) => {
+        const statusCode = err.response?.status;
+
+        if (statusCode === 409) {
+          // this is email conflict, so show error in email field
+          form.setError('email', { message: 'This email is already in use.' });
+        }
+        return 'Failed to signup';
+      },
+    });
+  };
+
+  const error = signupError || loginError;
+
+  const isPending = isSigningUp || isLoggingIn;
 
   return (
-    <AuthFormShell
-      formId="register-form"
-      submitLabel={submitLabel}
-      onSubmit={form.handleSubmit(() => undefined)}
-      preference="I agree to keep conversations respectful and follow the community guidelines."
-      preferenceChecked
-    >
-      <form
-        className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-7"
-        noValidate
-      >
-        <AuthField
-          id="register-name"
-          label="Display name"
-          placeholder="How should people know you?"
-          type="text"
-          autoComplete="name"
-          icon={UserRound}
-          registration={form.register('name')}
-          error={form.formState.errors.name}
-        />
-        <AuthField
-          id="register-email"
-          label="Email address"
-          placeholder="you@example.com"
-          type="email"
-          autoComplete="email"
-          icon={Mail}
-          registration={form.register('email')}
-          error={form.formState.errors.email}
-        />
-        <AuthField
-          id="register-password"
-          label="Password"
-          placeholder="Create a password"
-          type="password"
-          autoComplete="new-password"
-          icon={LockKeyhole}
-          registration={form.register('password')}
-          error={form.formState.errors.password}
-        />
-        <AuthField
-          id="register-password-confirmation"
-          label="Confirm password"
-          placeholder="Enter it once more"
-          type="password"
-          autoComplete="new-password"
-          icon={LockKeyhole}
-          registration={form.register('confirmPassword')}
-          error={form.formState.errors.confirmPassword}
-        />
-      </form>
-    </AuthFormShell>
-  );
-}
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Card className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-7">
+        {error?.response?.data?.message && (
+          <Alert variant="destructive-filled">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{error?.response?.data?.message}</AlertDescription>
+          </Alert>
+        )}
 
-function AuthFormShell({
-  children,
-  formId,
-  onSubmit,
-  preference,
-  preferenceChecked = false,
-  submitLabel,
-}: {
-  children: React.ReactNode;
-  formId: string;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-  preference: string;
-  preferenceChecked?: boolean;
-  submitLabel: string;
-}) {
-  return (
-    <form
-      id={formId}
-      className="rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-7"
-      onSubmit={onSubmit}
-      noValidate
-    >
-      <FieldGroup className="gap-5">{children}</FieldGroup>
-
-      <div className="mt-5 flex items-start gap-2.5">
-        <span className="mt-0.5 grid size-4 shrink-0 place-items-center rounded border border-border bg-muted text-muted-foreground">
-          {preferenceChecked ? <Check className="size-3" aria-hidden="true" /> : null}
-        </span>
-        <p className="text-xs leading-5 text-muted-foreground">{preference}</p>
-      </div>
-
-      <Button type="submit" className="mt-6 h-11 w-full rounded-xl text-sm">
-        {submitLabel}
-        <ArrowRight className="size-4" aria-hidden="true" />
-      </Button>
+        <CardContent className="p-0 flex flex-col gap-5">
+          <Controller
+            control={form.control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-sm font-medium" htmlFor="register-name">
+                  Name
+                </FieldLabel>
+                <Input
+                  className="h-11 bg-background px-3 text-sm md:text-sm"
+                  id="register-name"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Jhon Doe"
+                  autoComplete="off"
+                  autoFocus
+                  {...field}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-sm font-medium" htmlFor="register-email">
+                  Email
+                </FieldLabel>
+                <Input
+                  className="h-11 bg-background px-3 text-sm md:text-sm"
+                  id="register-email"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="you@example.com"
+                  autoComplete="off"
+                  autoFocus
+                  {...field}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-sm font-medium" htmlFor="login-password">
+                  Password
+                </FieldLabel>
+                <PasswordInput
+                  className="h-11 bg-background px-3 text-sm md:text-sm"
+                  id="login-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                  autoComplete="off"
+                  autoFocus
+                  {...field}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="confirmPassword"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-sm font-medium" htmlFor="register-confirm-password">
+                  Confirm Password
+                </FieldLabel>
+                <PasswordInput
+                  className="h-11 bg-background px-3 text-sm md:text-sm"
+                  id="register-confirm-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                  autoComplete="off"
+                  autoFocus
+                  {...field}
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Button loading={isPending} type="submit" className="h-11 w-full rounded-xl text-sm">
+            Signup <ArrowRight />
+          </Button>
+        </CardContent>
+      </Card>
     </form>
-  );
-}
-
-function AuthField({
-  id,
-  label,
-  icon: Icon,
-  registration,
-  error,
-  ...inputProps
-}: {
-  id: string;
-  label: string;
-  icon: typeof Mail;
-  registration: UseFormRegisterReturn;
-  error?: HookFormFieldError;
-  placeholder: string;
-  type: 'email' | 'password' | 'text';
-  autoComplete: string;
-}) {
-  return (
-    <Field data-invalid={Boolean(error)}>
-      <FieldLabel htmlFor={id} className="text-sm text-foreground">
-        {label}
-      </FieldLabel>
-      <div className="relative">
-        <Icon
-          className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-          aria-hidden="true"
-        />
-
-        <Input
-          id={id}
-          aria-invalid={Boolean(error)}
-          className="h-11 rounded-xl border-border bg-background pl-10 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30 md:text-sm"
-          {...inputProps}
-          {...registration}
-        />
-      </div>
-      {error ? <FieldError errors={[error]} /> : null}
-    </Field>
   );
 }
 

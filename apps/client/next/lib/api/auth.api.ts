@@ -24,3 +24,8 @@ export async function signup(args: SignupInput) {
   const res = await axiosV1.post<ApiResponse>('/auth/signup', args);
   return res.data;
 }
+
+export async function logout() {
+  const res = await axiosV1.post<ApiResponse>('/auth/logout');
+  return res.data;
+}

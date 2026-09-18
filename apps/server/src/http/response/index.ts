@@ -11,7 +11,7 @@ export function formatResponse<T>(args: ResponseFormat<T>): ResponseFormat<T> {
   };
 }
 
-export function sendResponse<T>(
+export function sendResponse<T = unknown>(
   args: {
     res: Response;
   } & ResponseFormat<T>,

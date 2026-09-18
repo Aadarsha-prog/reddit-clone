@@ -1,9 +1,23 @@
 'use client';
-import { DoorOpenIcon, Grid, Plus, UserPlus2 } from 'lucide-react';
+import { DoorOpenIcon, Grid, Loader2, Plus, User, UserIcon, UserPlus2 } from 'lucide-react';
 import Link from 'next/link';
-import { buttonVariants } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import { APP_ROUTES } from '@/lib/app-routes';
 import { useGetUserAPI } from '@/hooks/api/useUser';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { UserCircleIcon } from '@phosphor-icons/react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { logout } from '@/lib/api/auth.api';
+import { toast } from '../ui/toast';
+import { useRouter } from 'next/navigation';
+import { queryKeys } from '@/lib/react-query/query-mutation-keys';
 
 function AppHeader() {
   const { data: user, isLoading } = useGetUserAPI();
@@ -40,6 +54,7 @@ function AppHeader() {
                     <Plus className="size-4" aria-hidden="true" />
                     New post
                   </Link>
+                  <UserAccountPopover />
                 </>
               ) : (
                 <>
@@ -67,4 +82,49 @@ function AppHeader() {
   );
 }
 
+function UserAccountPopover() {
+  const { mutateAsync: triggerLogout, isPending } = useMutation({
+    mutationFn: logout,
+  });
+  const queryClient = useQueryClient();
+
+  async function logutWithInvalidation() {
+    const response = await triggerLogout();
+    await queryClient.invalidateQueries({
+      queryKey: queryKeys.getUser(),
+    });
+
+    return response;
+  }
+
+  function handleLogout() {
+    toast.promise(logutWithInvalidation(), {
+      loading: 'Logging you out...',
+      error: 'Error while logging you out',
+      success: () => {
+        window.location.href = APP_ROUTES.AUTH.LOGIN;
+
+        return 'Successfully logged out';
+      },
+    });
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        <UserCircleIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem disabled={isPending} onClick={handleLogout}>
+            {isPending ? <Loader2 className="size-3 animate-spin" /> : null}
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 export default AppHeader;

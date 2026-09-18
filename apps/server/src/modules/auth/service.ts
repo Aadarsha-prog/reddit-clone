@@ -60,3 +60,12 @@ export async function signup(body: SignupInput) {
 
   return dbInstance.insert(usersTable).values({ ...body, password: hasnedPassword });
 }
+
+export async function logout(res: Response) {
+  // Remvoe the cookie
+  res.clearCookie(AUTH_ACCESS_TOKEN_COOKIE_NAME, {
+    httpOnly: true,
+    secure: env.NODE_ENV !== E_NODE_ENV_ENUM.local,
+    sameSite: env.NODE_ENV === E_NODE_ENV_ENUM.local ? 'lax' : 'strict',
+  });
+}
