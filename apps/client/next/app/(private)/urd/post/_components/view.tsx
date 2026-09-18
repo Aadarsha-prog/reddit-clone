@@ -9,11 +9,13 @@ import {
   Check,
   Clock3,
   Edit3,
+  Feather,
   Plus,
   Share2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
+import { APP_ROUTES } from '@/lib/app-routes';
 
 type Vote = -1 | 0 | 1;
 
@@ -68,7 +70,7 @@ function PostView({ post }: { post: Post }) {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <Link
-        href="/"
+        href={APP_ROUTES.HOME}
         className="group inline-flex items-center gap-2 rounded-full text-xs font-semibold text-black/50 transition hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ee5a2f]/40"
       >
         <ArrowLeft
@@ -81,16 +83,21 @@ function PostView({ post }: { post: Post }) {
       <div className="mt-6 grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_230px] lg:gap-7">
         <article className="overflow-hidden rounded-3xl border border-black/8 bg-white shadow-[0_18px_60px_rgba(42,37,28,0.07)]">
           <header className="border-b border-black/7 px-5 py-8 sm:px-9 sm:py-10 lg:px-12 lg:py-12">
-            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-[11px] font-semibold text-black/45">
-              <span className="rounded-full bg-[#ffede7] px-2.5 py-1 uppercase tracking-[0.12em] text-[#c64220]">
-                Community post
+            <div className="flex items-center gap-3.5">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#ffede7] text-sm font-bold text-[#c43f18]">
+                {post.title.trim().charAt(0).toUpperCase() || 'P'}
               </span>
-              <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
-              <span className="size-0.5 rounded-full bg-black/25" aria-hidden="true" />
-              <span className="inline-flex items-center gap-1">
-                <Clock3 className="size-3" aria-hidden="true" />
-                {getReadingTime(post.content)} min read
-              </span>
+              <div>
+                <p className="text-xs font-semibold text-black/65">Community post</p>
+                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-black/42">
+                  <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
+                  <span className="size-0.5 rounded-full bg-black/25" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-1">
+                    <Clock3 className="size-3" aria-hidden="true" />
+                    {getReadingTime(post.content)} min read
+                  </span>
+                </div>
+              </div>
             </div>
 
             <h1 className="mt-6 max-w-3xl text-3xl font-semibold leading-[1.05] tracking-[-0.05em] text-balance sm:text-4xl lg:text-5xl">
@@ -185,23 +192,43 @@ function PostView({ post }: { post: Post }) {
           </footer>
         </article>
 
-        <aside className="rounded-2xl border border-black/8 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)] lg:sticky lg:top-6">
-          <div className="grid size-9 place-items-center rounded-xl bg-[#e6f3ee] text-[#17674f]">
-            <span className="size-2.5 rounded-full bg-current" />
+        <aside className="space-y-3 lg:sticky lg:top-6">
+          <div className="rounded-2xl border border-black/8 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ee5a2f]">
+              At a glance
+            </p>
+            <dl className="mt-4 space-y-3">
+              <div className="flex items-center justify-between gap-4 border-b border-black/6 pb-3">
+                <dt className="text-xs text-black/45">Published</dt>
+                <dd className="text-right text-xs font-semibold">{formatDate(post.createdAt)}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-xs text-black/45">Reading time</dt>
+                <dd className="text-right text-xs font-semibold">
+                  {getReadingTime(post.content)} min
+                </dd>
+              </div>
+            </dl>
           </div>
-          <h2 className="mt-5 text-base font-semibold tracking-[-0.02em]">
-            Have something to add?
-          </h2>
-          <p className="mt-2 text-xs leading-5 text-black/48">
-            Keep the ideas moving. Share a question, lesson, or discovery of your own.
-          </p>
-          <Link
-            href="/post/create"
-            className="mt-5 inline-flex h-9 w-full items-center justify-center gap-2 rounded-full bg-[#20211f] px-4 text-xs font-semibold text-white transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ee5a2f]/50"
-          >
-            <Plus className="size-3.5" aria-hidden="true" />
-            Create a post
-          </Link>
+
+          <div className="rounded-2xl border border-black/8 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+            <div className="grid size-9 place-items-center rounded-xl bg-[#e6f3ee] text-[#17674f]">
+              <Feather className="size-4" aria-hidden="true" />
+            </div>
+            <h2 className="mt-5 text-base font-semibold tracking-[-0.02em]">
+              Have something to add?
+            </h2>
+            <p className="mt-2 text-xs leading-5 text-black/48">
+              Keep the ideas moving. Share a question, lesson, or discovery of your own.
+            </p>
+            <Link
+              href={APP_ROUTES.POST.CREATE}
+              className="mt-5 inline-flex h-9 w-full items-center justify-center gap-2 rounded-full bg-[#20211f] px-4 text-xs font-semibold text-white transition hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ee5a2f]/50"
+            >
+              <Plus className="size-3.5" aria-hidden="true" />
+              Create a post
+            </Link>
+          </div>
         </aside>
       </div>
     </main>

@@ -2,7 +2,7 @@ export const APP_ROUTES = {
   HOME: '/',
   POST: {
     CREATE: '/urd/post/create',
-    VIEW: (id: string) => `/urd/post/${id}` as const,
+    VIEW: (slug: string) => `/post/${slug}` as const,
     EDIT: (id: string) => `/urd/post/${id}/edit` as const,
   },
   AUTH: {

@@ -1,23 +1,25 @@
-import { eq } from 'drizzle-orm';
 import { dbInstance } from '../../db/connection.js';
-import { usersTable, type UserTable } from '../../db/schemas/index.js';
 import { CustomError } from '../../http/error/customError.js';
 
-export async function getUserById(userId: number) {
-  const users = await dbInstance
-    .select()
-    .from(usersTable)
-    .where(eq(usersTable.id, userId))
-    .limit(1);
+export function userColumns() {
+  return {
+    name: true,
+    id: true,
+    email: true,
+    created_at: true,
+    updated_at: true,
+  } as const;
+}
 
-  const user = users.at(0);
+export async function getUserById(userId: number) {
+  const user = await dbInstance.query.usersTable.findFirst({
+    where: {
+      id: userId,
+    },
+    columns: userColumns(),
+  });
 
   if (!user) throw new CustomError('User not found', 404);
 
   return user;
-}
-
-export function cleanUser(user: UserTable) {
-  const { password, ...cleanedUser } = user;
-  return cleanedUser;
 }

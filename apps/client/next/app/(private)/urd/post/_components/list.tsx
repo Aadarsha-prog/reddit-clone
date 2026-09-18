@@ -13,7 +13,8 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import { APP_ROUTES } from '@/lib/app-routes';
 
 type SortDirection = 'newest' | 'oldest';
 type Vote = -1 | 0 | 1;
@@ -44,8 +45,8 @@ function normalizeText(value: string) {
 function PostList({ posts }: { posts: Post[] }) {
   const [query, setQuery] = useState('');
   const [sortDirection, setSortDirection] = useState<SortDirection>('newest');
-  const [votes, _setVotes] = useState<Record<string, Vote>>({});
-  const [savedPosts, __setSavedPosts] = useState<Set<string>>(() => new Set());
+  const [votes] = useState<Record<string, Vote>>({});
+  const [savedPosts] = useState<Set<string>>(() => new Set());
 
   //   const visiblePosts = useMemo(() => {
   //     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -190,12 +191,17 @@ function PostList({ posts }: { posts: Post[] }) {
                           ) : null}
                         </div>
 
-                        <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight text-[#20211f] transition-colors group-hover:text-[#c64220] sm:text-xl">
-                          {post.title}
-                        </h2>
-                        <p className="mt-2 line-clamp-3 text-sm leading-6 text-black/58">
-                          {normalizeText(post.content)}
-                        </p>
+                        <Link
+                          href={APP_ROUTES.POST.VIEW(post.slug)}
+                          className="block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ee5a2f]/40 focus-visible:ring-offset-4"
+                        >
+                          <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight text-[#20211f] transition-colors group-hover:text-[#c64220] sm:text-xl">
+                            {post.title}
+                          </h2>
+                          <p className="mt-2 line-clamp-3 text-sm leading-6 text-black/58">
+                            {normalizeText(post.content)}
+                          </p>
+                        </Link>
 
                         <div className="mt-4 flex items-center justify-between gap-3 border-t border-black/6 pt-3">
                           <div
@@ -279,7 +285,7 @@ function EmptyFeed() {
         Be the first to start a conversation and give the community something to talk about.
       </p>
       <Link
-        href="/post/create"
+        href={APP_ROUTES.POST.CREATE}
         className="mt-6 inline-flex h-9 items-center gap-2 rounded-full bg-[#20211f] px-4 text-xs font-semibold text-white transition hover:-translate-y-0.5 hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ee5a2f]/50"
       >
         <Plus className="size-4" aria-hidden="true" />

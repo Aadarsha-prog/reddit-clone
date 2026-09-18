@@ -1,7 +1,14 @@
 import type { Request, Response } from 'express';
 import { sendResponse } from '../../http/response/index.js';
-import { createPost, getAllPosts, getPostById, updatePost, deletePost } from './service.js';
-import z from 'zod';
+import {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+  deletePost,
+  getPostBySlug,
+} from './service.js';
+import { z } from 'zod';
 import { CustomError } from '../../http/error/customError.js';
 import { queryParamSchema, type PostCreateInput, type PostUpdateInput } from '@reddit-clone/shared';
 
@@ -21,7 +28,9 @@ export async function postIndexHandler(req: Request, res: Response) {
 export async function postRetrieveHandler(req: Request, res: Response) {
   const id = req.params.id;
 
-  const numericId = z.number().parse(Number(id));
+  const { success: isValidId, data: numericId } = z.number().safeParse(Number(id));
+
+  if (!isValidId) throw new CustomError('Invalid ID', 400);
 
   const post = await getPostById(numericId);
 
@@ -35,10 +44,31 @@ export async function postRetrieveHandler(req: Request, res: Response) {
   });
 }
 
+export async function postRetrieveBySlugHandler(req: Request, res: Response) {
+  const slug = req.params.slug;
+
+  // Assert slug is valid string
+  const { success: isValidString, data: parsedSlug } = z.string().safeParse(slug);
+
+  if (!isValidString) throw new CustomError('Invalid slug', 400);
+
+  const post = await getPostBySlug(parsedSlug);
+
+  if (!post) throw new CustomError('Post not found', 404);
+
+  return sendResponse({
+    res,
+    data: post,
+    message: 'Post retrieved successfully',
+    statusCode: 200,
+  });
+}
+
 export async function postCreateHandler(req: Request, res: Response) {
   const validatedBody = req.validatedBody as PostCreateInput;
+  const user = res.locals.user;
 
-  await createPost(validatedBody);
+  await createPost({ post: validatedBody, userId: user.id });
 
   return sendResponse({
     res,

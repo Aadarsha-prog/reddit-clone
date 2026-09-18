@@ -7,7 +7,7 @@ declare global {
     }
 
     interface Locals {
-      user: UserTable;
+      user: Omit<UserTable, 'password'>;
     }
   }
 }

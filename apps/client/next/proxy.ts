@@ -5,6 +5,7 @@ import { APP_ROUTES } from './lib/app-routes';
 
 const protectedOnlyRoutePrefixes = ['/urd'];
 const publicOnlyRoutePrefixes = ['/auth'];
+const commonRoutePrefixes = ['/post'];
 
 function checkRoutePrefix(args: { path: string; prefixes: string[] }) {
   return args.prefixes.some((prefix) => args.path.startsWith(prefix));
@@ -13,6 +14,13 @@ function checkRoutePrefix(args: { path: string; prefixes: string[] }) {
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   const currentPathName = request.nextUrl.pathname;
+
+  // If user is trying to access common routes, allow them
+  // SInce all routes start with /, this will match all routes and allow them through
+  if (currentPathName === '/') return NextResponse.next();
+
+  if (checkRoutePrefix({ path: currentPathName, prefixes: commonRoutePrefixes }))
+    return NextResponse.next();
 
   const isProtectedOnlyRoute = checkRoutePrefix({
     path: currentPathName,
