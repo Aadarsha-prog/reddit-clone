@@ -13,7 +13,7 @@ http:
     type: json
     data: |-
       {
-        "title": "AI Software engineering",
+        "title": "AI Software engineering 3",
         "content": "Software engineering with AI"
       }
   auth: inherit

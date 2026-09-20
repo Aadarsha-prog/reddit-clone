@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { ApiResponse } from '../http/types.js';
 
 export const postCreateSchema = z.object({
   title: z.string('Title is required').min(1, 'Title is required'),
@@ -15,13 +14,8 @@ export const postUpdateSchema = z.object({
 
 export type PostUpdateInput = z.infer<typeof postUpdateSchema>;
 
-export type Post = {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  slug: string;
-};
+export const postVoteSchema = z.object({
+  voteType: z.enum(['upvote', 'downvote'], 'Vote type is required'),
+});
 
-export type GetAllPostResponse = ApiResponse<Post[]>;
+export type PostVoteInput = z.infer<typeof postVoteSchema>;

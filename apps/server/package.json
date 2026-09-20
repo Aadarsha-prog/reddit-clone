@@ -13,7 +13,9 @@
     "lint:check": "eslint src/",
     "lint:write": "eslint src/ --fix",
     "lint": "pnpm run lint:check",
-    "pr:check": "pnpm run format:check && pnpm run lint:check && pnpm run type-check && pnpm run build"
+    "pr:check": "pnpm run format:check && pnpm run lint:check && pnpm run type-check && pnpm run build",
+    "migration:generate": "drizzle-kit generate --config ./src/drizzle.config.ts --name $1",
+    "migration:apply": "drizzle-kit migrate --config ./src/drizzle.config.ts"
   },
   "keywords": [],
   "author": "Suparth Narayan Ghimire",

@@ -1,6 +1,6 @@
 'use client';
 
-import type { Post } from '@reddit-clone/shared';
+import type { Post } from '@/lib/types/post.types';
 import {
   ArrowBigDown,
   ArrowBigUp,
@@ -12,6 +12,7 @@ import {
   Feather,
   Plus,
   Share2,
+  UserRound,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -25,8 +26,12 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 });
 
-function formatDate(value: string) {
-  const date = new Date(value);
+function toDate(value: Date | string) {
+  return value instanceof Date ? value : new Date(value);
+}
+
+function formatDate(value: Date | string) {
+  const date = toDate(value);
 
   return Number.isNaN(date.getTime()) ? 'Recently' : dateFormatter.format(date);
 }
@@ -41,7 +46,7 @@ function PostView({ post }: { post: Post }) {
   const [vote, setVote] = useState<Vote>(0);
   const [isSaved, setIsSaved] = useState(false);
   const [wasCopied, setWasCopied] = useState(false);
-  const wasEdited = post.updatedAt !== post.createdAt;
+  const wasEdited = toDate(post.updated_at).getTime() !== toDate(post.created_at).getTime();
 
   function castVote(nextVote: Exclude<Vote, 0>) {
     setVote((currentVote) => (currentVote === nextVote ? 0 : nextVote));
@@ -85,12 +90,14 @@ function PostView({ post }: { post: Post }) {
           <header className="border-b border-black/7 px-5 py-8 sm:px-9 sm:py-10 lg:px-12 lg:py-12">
             <div className="flex items-center gap-3.5">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#ffede7] text-sm font-bold text-[#c43f18]">
-                {post.title.trim().charAt(0).toUpperCase() || 'P'}
+                {post.user.name.trim().charAt(0).toUpperCase() || 'U'}
               </span>
               <div>
-                <p className="text-xs font-semibold text-black/65">Community post</p>
+                <p className="text-xs font-semibold text-black/65">{post.user.name}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-black/42">
-                  <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
+                  <time dateTime={toDate(post.created_at).toISOString()}>
+                    {formatDate(post.created_at)}
+                  </time>
                   <span className="size-0.5 rounded-full bg-black/25" aria-hidden="true" />
                   <span className="inline-flex items-center gap-1">
                     <Clock3 className="size-3" aria-hidden="true" />
@@ -107,7 +114,7 @@ function PostView({ post }: { post: Post }) {
             {wasEdited ? (
               <p className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-medium text-black/38">
                 <Edit3 className="size-3" aria-hidden="true" />
-                Last edited {formatDate(post.updatedAt)}
+                Last edited {formatDate(post.updated_at)}
               </p>
             ) : null}
           </header>
@@ -200,7 +207,7 @@ function PostView({ post }: { post: Post }) {
             <dl className="mt-4 space-y-3">
               <div className="flex items-center justify-between gap-4 border-b border-black/6 pb-3">
                 <dt className="text-xs text-black/45">Published</dt>
-                <dd className="text-right text-xs font-semibold">{formatDate(post.createdAt)}</dd>
+                <dd className="text-right text-xs font-semibold">{formatDate(post.created_at)}</dd>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <dt className="text-xs text-black/45">Reading time</dt>
@@ -209,6 +216,27 @@ function PostView({ post }: { post: Post }) {
                 </dd>
               </div>
             </dl>
+          </div>
+
+          <div className="rounded-2xl border border-black/8 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#ee5a2f]">
+              Contributor
+            </p>
+            <div className="mt-4 flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-[#ece9ff] text-sm font-bold text-[#5846a8]">
+                {post.user.name.trim().charAt(0).toUpperCase() || 'U'}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-[#20211f]">{post.user.name}</p>
+                <p className="mt-0.5 text-xs text-black/45">
+                  Member since {formatDate(post.user.created_at)}
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2 border-t border-black/6 pt-3 text-xs text-black/45">
+              <UserRound className="size-3.5" aria-hidden="true" />
+              Community contributor
+            </div>
           </div>
 
           <div className="rounded-2xl border border-black/8 bg-white p-5 shadow-[0_1px_0_rgba(0,0,0,0.04)]">

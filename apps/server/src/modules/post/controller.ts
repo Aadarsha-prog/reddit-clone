@@ -7,6 +7,7 @@ import {
   updatePost,
   deletePost,
   getPostBySlug,
+  votePost,
 } from './service.js';
 import { z } from 'zod';
 import { CustomError } from '../../http/error/customError.js';
@@ -89,6 +90,24 @@ export async function postUpdateHandler(req: Request, res: Response) {
     data: null,
     message: 'Post updated successfully',
     statusCode: 201,
+  });
+}
+
+export async function postVoteHandler(req: Request, res: Response) {
+  const id = z.number().parse(Number(req.params.id));
+  const voteType = z.enum(['upvote', 'downvote']).parse(req.params.voteType);
+
+  const result = await votePost({
+    postId: id,
+    userId: res.locals.user.id,
+    voteType: voteType,
+  });
+
+  return sendResponse({
+    res,
+    data: result,
+    message: 'Post voted successfully',
+    statusCode: 200,
   });
 }
 

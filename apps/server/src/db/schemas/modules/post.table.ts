@@ -14,6 +14,10 @@ export const postsTable = pgTable(
       .references(() => usersTable.id),
     // Create a slug
     slug: text().unique().notNull(),
+
+    total_upvotes: integer().notNull().default(0),
+    total_downvotes: integer().notNull().default(0),
+
     updated_at: timestamp()
       .notNull()
       .$onUpdateFn(() => new Date()),
@@ -22,5 +26,7 @@ export const postsTable = pgTable(
     return [index('title_idx').on(table.title)];
   },
 );
+
+// Table to store post and upvote/downvited user ids
 
 export type PostTable = typeof postsTable.$inferSelect;

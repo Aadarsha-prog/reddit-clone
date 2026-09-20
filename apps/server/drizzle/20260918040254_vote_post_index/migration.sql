@@ -1,0 +1,1 @@
+CREATE INDEX "post_id_idx" ON "post_user_votes" ("post_id");

@@ -5,6 +5,7 @@ import {
   postIndexHandler,
   postRetrieveBySlugHandler,
   postRetrieveHandler,
+  postVoteHandler,
   postUpdateHandler,
 } from './controller.js';
 import { validate } from '../../middleware/validation.middleware.js';
@@ -17,4 +18,5 @@ export const postRouter = Router()
   .get('/slug/:slug', postRetrieveBySlugHandler)
   .post('/', isValidUser, validate(postCreateSchema), postCreateHandler)
   .patch('/:id', isValidUser, validate(postUpdateSchema), postUpdateHandler)
+  .put('/:id/vote/:voteType', isValidUser, postVoteHandler)
   .delete('/:id', isValidUser, postDeleteHandler);

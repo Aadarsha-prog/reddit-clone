@@ -1,6 +1,6 @@
 'use client';
 
-import type { Post } from '@reddit-clone/shared';
+import type { Post } from '@/lib/types/post.types';
 import {
   ArrowBigDown,
   ArrowBigUp,
@@ -32,8 +32,8 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 });
 
-function formatDate(value: string) {
-  const date = new Date(value);
+function formatDate(value: Date | string) {
+  const date = value instanceof Date ? value : new Date(value);
 
   return Number.isNaN(date.getTime()) ? 'Recently' : dateFormatter.format(date);
 }
@@ -42,11 +42,15 @@ function normalizeText(value: string) {
   return value.replace(/\s+/g, ' ').trim();
 }
 
+function toDate(value: Date | string) {
+  return value instanceof Date ? value : new Date(value);
+}
+
 function PostList({ posts }: { posts: Post[] }) {
   const [query, setQuery] = useState('');
   const [sortDirection, setSortDirection] = useState<SortDirection>('newest');
   const [votes] = useState<Record<string, Vote>>({});
-  const [savedPosts] = useState<Set<string>>(() => new Set());
+  const [savedPosts] = useState<Set<number>>(() => new Set());
 
   //   const visiblePosts = useMemo(() => {
   //     const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -160,7 +164,8 @@ function PostList({ posts }: { posts: Post[] }) {
               {posts.map((post, index) => {
                 const vote = votes[post.id] ?? 0;
                 const isSaved = savedPosts.has(post.id);
-                const wasEdited = post.updatedAt !== post.createdAt;
+                const wasEdited =
+                  toDate(post.updated_at).getTime() !== toDate(post.created_at).getTime();
 
                 return (
                   <article
@@ -172,14 +177,16 @@ function PostList({ posts }: { posts: Post[] }) {
                         className={`grid size-10 shrink-0 place-items-center rounded-xl text-sm font-bold ${avatarStyles[index % avatarStyles.length]}`}
                         aria-hidden="true"
                       >
-                        {post.title.trim().charAt(0).toUpperCase() || 'P'}
+                        {post.user.name.trim().charAt(0).toUpperCase() || 'U'}
                       </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-black/42">
-                          <span className="text-black/65">Community post</span>
+                          <span className="text-black/65">{post.user.name}</span>
                           <span className="size-0.5 rounded-full bg-black/25" aria-hidden="true" />
-                          <time dateTime={post.createdAt}>{formatDate(post.createdAt)}</time>
+                          <time dateTime={toDate(post.created_at).toISOString()}>
+                            {formatDate(post.created_at)}
+                          </time>
                           {wasEdited ? (
                             <>
                               <span

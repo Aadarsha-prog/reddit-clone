@@ -5,11 +5,12 @@ info:
 
 http:
   method: GET
-  url: "{{BASE_URL}}/api/v1/post?title=abc"
+  url: "{{BASE_URL}}/api/v1/post"
   params:
     - name: title
       value: abc
       type: query
+      disabled: true
   auth: inherit
 
 settings:
