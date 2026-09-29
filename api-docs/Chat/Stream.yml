@@ -1,0 +1,25 @@
+info:
+  name: Stream
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{BASE_URL}}/api/v1/chat/stream"
+  body:
+    type: json
+    data: |-
+      {
+        "message": "Hi, can you tell me somehting about the stars in astronomy?",
+        "reasoning": "low",
+        "provider": "openai",
+        "model": "gpt-5.6-luna"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
